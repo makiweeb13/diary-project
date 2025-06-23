@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-undef */
 const express = require('express')
 const mysql = require('mysql2')
 const cors = require('cors')
@@ -14,7 +16,7 @@ const port = 3001
 const app = express()
 app.use(express.json())
 
-const url = 'http://localhost:3000'
+const url = 'http://localhost:5173'
 app.use(cors({
     origin: [url],
     methods: ['GET', 'POST'],
@@ -37,7 +39,7 @@ app.use(session({
 const db = mysql.createConnection({
     user: 'root',
     host: 'localhost',
-    password: '',
+    password: 'password',
     database: 'memoir'
 })
 
@@ -52,7 +54,7 @@ app.post('/signup', (req, res) => {
     bcrypt.hash(account.password, saltRounds, (err, hash) => {
         if (err) console.log(err)
         db.query(
-            "INSERT INTO accounts (username, password, email_address) VALUES (?,?,?)",
+            "INSERT INTO users (username, password, email_address) VALUES (?,?,?)",
             [account.username, hash, account.email],
             (err, result) => {
                 if (result) console.log('Signed in successfully')
@@ -77,7 +79,7 @@ app.post('/login', (req, res) => {
     }
 
     db.query(
-        "SELECT * FROM accounts WHERE email_address = ?",
+        "SELECT * FROM users WHERE email_address = ?",
         account.email,
         (err, result) => {
             if (err) {
